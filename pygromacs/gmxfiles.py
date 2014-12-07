@@ -101,6 +101,7 @@ class MdpFile(object):
         try:
             value = self.options[parameter].value
         except KeyError:
+            value = None
             print("option '%s' not in list" % parameter)
 
         return value
