@@ -69,12 +69,13 @@ class MdpFile(object):
     """
 
     def __init__(self, path=None):
+        self.path = path
         self.ext = ".mdp"
         self.lines = []
         self.options = {}
 
         if self.path:
-            self.read()
+            self.read(path)
 
     class MdpOption(object):
         def __init__(self, parameter="", value="", comment="", index=None):

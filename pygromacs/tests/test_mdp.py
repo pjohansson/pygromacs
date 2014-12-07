@@ -1,6 +1,4 @@
-from unittest import TestCase
-from pygromacs.gmxfiles import MdpFile
+from pygromacs.gmxfiles import *
 
-class TestMdp(TestCase):
-    def test_read(self):
-        mdp = MdpFile(file='grompp.mdp')
+def test_read():
+    mdp = MdpFile('grompp.mdp')
