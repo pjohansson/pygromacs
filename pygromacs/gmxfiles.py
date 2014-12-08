@@ -248,6 +248,7 @@ class MdpFile(object):
                         for index, line in enumerate(fp.readlines())]
         except FileNotFoundError:
             print("could not open '%s' for reading" % self.path)
+            self.path = None
 
     def save(self, path=None, verbose=True, **kwargs):
         """

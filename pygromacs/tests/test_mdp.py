@@ -17,17 +17,23 @@ def test_read():
     assert (mdp.lines[0].comment == ";")
     assert (mdp.lines[1].comment == ";	File 'mdout.mdp' was generated")
 
+    # Try reading bad file name
+    mdp = MdpFile(os.urandom(8))
+    assert (mdp.path == None)
+
 def test_get_option():
     mdp = MdpFile(path)
     assert (mdp.get_option('nsteps') == '10000')
     assert (mdp.get_option('Tcoupl') == 'v-rescale')
+    assert (mdp.get_option('not-a-parameter') == None)
 
 def test_set_option():
     mdp = MdpFile(path)
     mdp.set_option('nsteps', 25000)
     assert (mdp.get_option('nsteps') == '25000')
-    mdp.set_option('verlet-buffer-drift', 0.15)
+    mdp.set_option('verlet-buffer-drift', 0.15, 'test-comment')
     assert (mdp.get_option('verlet-buffer-drift') == '0.15')
+    assert (mdp.options['verlet-buffer-drift'].comment == '; test-comment')
     assert (mdp.lines[-1] == mdp.options['verlet-buffer-drift'])
 
 def test_remove_option():
@@ -71,6 +77,7 @@ def test_comment():
     assert (mdp.options['nsteps'].comment == ';4 ns with semicolon')
     mdp.set_comment('nsteps', '4 ns ; with several semicolon ;')
     assert (mdp.options['nsteps'].comment == '; 4 ns ; with several semicolon ;')
+    mdp.set_comment('not-a-parameter', 'really important parameter')
 
 def test_search():
     mdp = MdpFile(path)
