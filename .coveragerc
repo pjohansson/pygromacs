@@ -1,0 +1,3 @@
+[run]
+omit = pygromacs/__init__.py
+       pygromacs/tests/test_*.py
