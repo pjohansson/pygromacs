@@ -132,7 +132,7 @@ class MdpFile(object):
         """
 
         if parameter in self.options.keys():
-            self.options[parameter].value = value
+            self.options[parameter].value = str(value)
         else:
             index = len(self.lines)
             self.options[parameter] = self.MdpOption(parameter, value, "", index)
