@@ -49,3 +49,5 @@ include
 
 # Working directory
 working/
+build/
+docs/_build
