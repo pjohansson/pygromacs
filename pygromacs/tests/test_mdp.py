@@ -15,6 +15,11 @@ def test_read():
     assert (type(mdp) == MdpFile)
     assert (mdp.path == path)
 
+    # Try extension completion
+    noext = path.rsplit('.mdp')[0]
+    mdp = MdpFile(noext)
+    assert (mdp.path == path)
+
     # Try reading bad file name
     mdp = MdpFile(str(os.urandom(8)))
     assert (mdp.path == None)
@@ -137,8 +142,7 @@ def test_save():
     # Control saving to custom extension in current directory
     ext = 'newext'
     _, filename = os.path.split(newpath)
-    filename = filename.split('.')[0] + '.' + ext
-    noext = filename.rsplit('.')[0]
-    backup = mdp.save(noext, ext=ext)
+    filename = filename.rsplit('.')[0] + '.' + ext
+    backup = mdp.save(filename, ext=ext)
     assert (os.access(filename, os.F_OK) == True)
     os.remove(filename)

@@ -246,6 +246,10 @@ class MdpFile(object):
 
             return option
 
+        # Verify file extension
+        if not os.access(path, os.R_OK) and not path.endswith('.mdp'):
+            path += '.mdp'
+
         self.path = path
         self.lines = []
         self.options = {}
