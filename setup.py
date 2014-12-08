@@ -10,9 +10,9 @@ class PyTest(Command):
 
     def run(self):
         import sys,subprocess
-        errno = subprocess.call([sys.executable, 'runtests.py'])
+        coverage = ['--cov', 'pygromacs', '--cov-report', 'term-missing' ]
+        errno = subprocess.call([sys.executable, 'runtests.py'] + coverage)
         raise SystemExit(errno)
-
 
 setup(
         name='pygromacs',
