@@ -35,6 +35,7 @@ Documentation
 -------------
 Documentation is available at Read the Docs: http://pygromacs.readthedocs.org/
 
+[![Documentation Status](https://readthedocs.org/projects/pygromacs/badge/?version=latest)](https://readthedocs.org/projects/pygromacs/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/pjohansson/pygromacs/badge.png?branch=working)]
 (https://coveralls.io/r/pjohansson/pygromacs?branch=working)
 
