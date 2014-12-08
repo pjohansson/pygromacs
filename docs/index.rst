@@ -6,10 +6,12 @@
 Welcome to pygromacs's documentation!
 =====================================
 
+
 Contents:
 
 .. toctree::
    :maxdepth: 2
+
 
 Indices and tables
 ==================
