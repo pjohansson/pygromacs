@@ -85,12 +85,14 @@ class MdpFile(object):
             self.index = index
 
         def print(self, comment=True):
+            string = ""
             if self.parameter:
-                print("%-24s = %s" % (self.parameter, self.value), end=" ")
+                string += "%-24s = %s" % (self.parameter, self.value)
             if comment and self.comment:
-                print("%s" % self.comment, end="")
+                string += "%s" % self.comment
             if self.parameter or comment:
-                print()
+                print(string)
+            return string
 
     def get_option(self, parameter):
         """
@@ -157,14 +159,16 @@ class MdpFile(object):
             for option in self.lines[index:]:
                 option.index -= 1
 
-    def search(self, parameter):
+    def search(self, string, comment=True):
         """
         Search for parameter among options.
 
         """
 
-        [self.print_option(option) for option in self.options.keys()
-                if option.find(parameter) != -1]
+        string = str(string).strip()
+        test = [self.print_option(option, comment) for option in self.options.keys()
+                if option.find(string) != -1]
+        return test
 
     def print_option(self, parameter, comment=False):
         """
@@ -174,7 +178,8 @@ class MdpFile(object):
         """
 
         if parameter in self.options.keys():
-            self.options[parameter].print(comment)
+            string = self.options[parameter].print(comment)
+        return string
 
     def print(self, comment=True):
         """

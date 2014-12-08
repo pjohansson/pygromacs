@@ -68,3 +68,15 @@ def test_comment():
     assert (mdp.options['nsteps'].comment == ';4 ns with semicolon')
     mdp.set_comment('nsteps', '4 ns ; with several semicolon ;')
     assert (mdp.options['nsteps'].comment == '; 4 ns ; with several semicolon ;')
+
+def test_search():
+    mdp = MdpFile(path)
+    assert (mdp.search('step', True) != [])
+    assert (mdp.search('step', False) != [])
+    assert (mdp.search('not-a-parameter') == [])
+    assert (mdp.search(10) == [])
+
+def test_print():
+    mdp = MdpFile(path)
+    mdp.print(True)
+    mdp.print(False)
