@@ -14,11 +14,9 @@ def test_read():
     mdp = MdpFile(path)
     assert (type(mdp) == MdpFile)
     assert (mdp.path == path)
-    assert (mdp.lines[0].comment == ";")
-    assert (mdp.lines[1].comment == ";	File 'mdout.mdp' was generated")
 
     # Try reading bad file name
-    mdp = MdpFile(os.urandom(8))
+    mdp = MdpFile(str(os.urandom(8)))
     assert (mdp.path == None)
 
 def test_get_option():
@@ -26,6 +24,7 @@ def test_get_option():
     assert (mdp.get_option('nsteps') == '10000')
     assert (mdp.get_option('Tcoupl') == 'v-rescale')
     assert (mdp.get_option('not-a-parameter') == None)
+    assert (mdp.get_option(10) == None)
 
 def test_set_option():
     mdp = MdpFile(path)
@@ -33,7 +32,7 @@ def test_set_option():
     assert (mdp.get_option('nsteps') == '25000')
     mdp.set_option('verlet-buffer-drift', 0.15, 'test-comment')
     assert (mdp.get_option('verlet-buffer-drift') == '0.15')
-    assert (mdp.options['verlet-buffer-drift'].comment == '; test-comment')
+    assert (mdp.options['verlet-buffer-drift'].comment == 'test-comment')
     assert (mdp.lines[-1] == mdp.options['verlet-buffer-drift'])
 
 def test_remove_option():
@@ -68,15 +67,17 @@ def test_remove_option():
 
 def test_comment():
     mdp = MdpFile(path)
-    assert (mdp.options['nsteps'].comment == '; 4 ns')
+    assert (mdp.lines[0].comment == "")
+    assert (mdp.lines[1].comment == "File 'mdout.mdp' was generated")
+    assert (mdp.options['nsteps'].comment == '4 ns')
     mdp.set_comment('nsteps', '4 ns run')
-    assert (mdp.options['nsteps'].comment == '; 4 ns run')
+    assert (mdp.options['nsteps'].comment == '4 ns run')
     mdp.set_comment('nsteps', ' 4 ns with space')
-    assert (mdp.options['nsteps'].comment == '; 4 ns with space')
+    assert (mdp.options['nsteps'].comment == '4 ns with space')
     mdp.set_comment('nsteps', ';4 ns with semicolon')
-    assert (mdp.options['nsteps'].comment == ';4 ns with semicolon')
+    assert (mdp.options['nsteps'].comment == '4 ns with semicolon')
     mdp.set_comment('nsteps', '4 ns ; with several semicolon ;')
-    assert (mdp.options['nsteps'].comment == '; 4 ns ; with several semicolon ;')
+    assert (mdp.options['nsteps'].comment == '4 ns ; with several semicolon ;')
     mdp.set_comment('not-a-parameter', 'really important parameter')
 
 def test_search():
@@ -102,7 +103,7 @@ def test_save():
     for test, control in zip(test_file.lines, mdp.lines):
         assert (test.parameter == control.parameter)
         assert (test.value == control.value)
-        assert (test.comment == control.comment)
+        assert (test.comment.strip() == control.comment.strip())
         assert (test.index == control.index)
 
     # Return file to original state
@@ -122,20 +123,22 @@ def test_save():
         mdp.set_option(parameter, rand[parameter])
 
     # Save to new path and compare
-    newpath = path.rsplit('.mdp')[0] + '-savetest'
-    backup = mdp.save(newpath, False)
-    control = MdpFile(newpath + '.mdp')
+    directory, filename = os.path.split(path)
+    directory += '/test/'
+    newpath = directory + filename
+    backup = mdp.save(newpath.rsplit('.mdp')[0], True)
+    control = MdpFile(newpath)
     for remove, change in zip(keys_remove, keys_change):
         assert (remove not in control.options.keys())
         assert (control.get_option(change) == rand[change])
-    if backup != None:
-        os.remove(backup)
+    os.remove(newpath)
+    os.rmdir(directory)
 
-    # Control saving to custom extension
+    # Control saving to custom extension in current directory
     ext = 'newext'
-    newpathext = newpath + '.' + ext
-    backup = mdp.save(newpath, ext='newext')
-    assert (os.access(newpathext, os.F_OK) == True)
-    os.remove(newpathext)
-    if backup != None:
-        os.remove(backup)
+    _, filename = os.path.split(newpath)
+    filename = filename.split('.')[0] + '.' + ext
+    noext = filename.rsplit('.')[0]
+    backup = mdp.save(noext, ext=ext)
+    assert (os.access(filename, os.F_OK) == True)
+    os.remove(filename)

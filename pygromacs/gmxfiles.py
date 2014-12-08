@@ -115,7 +115,7 @@ class MdpFile(object):
             if self.parameter:
                 string += "%-24s = %s" % (self.parameter, self.value)
             if comment and self.comment:
-                string += "%s" % self.comment
+                string += "; %s" % self.comment
             if self.parameter or comment:
                 print(string)
             return string
@@ -146,10 +146,7 @@ class MdpFile(object):
             return None
 
         # Verify that comment is of good form
-        comment = comment.strip()
-        if not comment.startswith(';'):
-            comment = "; " + comment
-        self.options[parameter].comment = comment
+        self.options[parameter].comment = comment.lstrip('; ')
 
         return None
 
@@ -228,7 +225,6 @@ class MdpFile(object):
         def parse_line(line):
             try:
                 option, comment = line.split(';', 1)
-                comment = ";" + comment
             except ValueError:
                 option, comment = line, ""
 
