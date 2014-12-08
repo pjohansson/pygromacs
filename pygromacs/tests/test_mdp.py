@@ -128,7 +128,8 @@ def test_save():
     for remove, change in zip(keys_remove, keys_change):
         assert (remove not in control.options.keys())
         assert (control.get_option(change) == rand[change])
-    os.remove(backup)
+    if backup != None:
+        os.remove(backup)
 
     # Control saving to custom extension
     ext = 'newext'
@@ -136,3 +137,5 @@ def test_save():
     backup = mdp.save(newpath, ext='newext')
     assert (os.access(newpathext, os.F_OK) == True)
     os.remove(newpathext)
+    if backup != None:
+        os.remove(backup)

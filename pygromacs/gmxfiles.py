@@ -5,8 +5,17 @@ from contextlib import redirect_stdout
 
 def verify_path(path, verbose=True):
     """
-    Verify that a location exists by creating required directories.
-    Back up any file found at the path.
+    Verify that a location exists by creating required directories and
+    back up any conflicting file.
+
+    :param path: Path to file.
+
+    :param verbose: Print information about any backup.
+
+    :return: If a file at ``path`` existed and was backed up, its new path is returned.
+        Otherwise `None`.
+
+    :rtype: str, None
 
     """
 
@@ -30,8 +39,9 @@ def verify_path(path, verbose=True):
         os.rename(path, backup)
         if verbose:
             print("Backed up '%s' to '%s'" % (path, backup))
-
-    return backup
+        return backup
+    else:
+        return None
 
 
 class Topol(object):
@@ -97,7 +107,7 @@ class MdpFile(object):
         def print(self, comment=True):
             """
             Print the option line in a standard format. Use ``comment``
-            to print or ignore a comment.
+            to print or ignore a comment. Returns printed string.
 
             """
 
@@ -179,6 +189,7 @@ class MdpFile(object):
     def search(self, string, comment=True):
         """
         Search for a parameter in :attr:`options`. Prints matching options.
+        Use ``comment`` to include or ignore comments.
 
         """
 
@@ -260,6 +271,10 @@ class MdpFile(object):
         :param verbose: Write information.
 
         :keyword ext: Use this file extension (by default 'mdp').
+
+        :return: If a file was backed up its new path is returned, otherwise `None`.
+
+        :rtype: str, None
 
         """
 
