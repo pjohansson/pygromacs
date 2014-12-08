@@ -137,12 +137,11 @@ def test_save():
         assert (remove not in control.options.keys())
         assert (control.get_option(change) == rand[change])
     os.remove(newpath)
-    os.rmdir(directory)
 
-    # Control saving to custom extension in current directory
-    ext = 'newext'
-    _, filename = os.path.split(newpath)
-    filename = filename.rsplit('.')[0] + '.' + ext
-    backup = mdp.save(filename, ext=ext)
-    assert (os.access(filename, os.F_OK) == True)
-    os.remove(filename)
+    # Save with custom extension
+    ext = 'new'
+    newpath = newpath.rsplit('.mdp')[0] + '.' + ext
+    backup = mdp.save(newpath, ext=ext)
+    assert (os.access(newpath, os.F_OK) == True)
+    os.remove(newpath)
+    os.rmdir(directory)
