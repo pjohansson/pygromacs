@@ -5,10 +5,10 @@ package [Gromacs](http://www.gromacs.org/).
 
 Planned features
 ----------
-- [ ] Read .mdp configuration files and quickly generate many new ones with 
+- [ ] Read .mdp configuration files and quickly generate many new ones with
   specified options changed.
 - [ ] Also .top topology files!
-- [ ] Convolute sets of generated topologies and configuration files to prepare 
+- [ ] Convolute sets of generated topologies and configuration files to prepare
 runs for a large parameter space.
 
 Development status
@@ -34,6 +34,8 @@ python setup.py install
 Documentation
 -------------
 Documentation is available at Read the Docs: http://pygromacs.readthedocs.org/
+
+To install the local theme, see: https://github.com/snide/sphinx_rtd_theme
 
 [![Documentation Status](https://readthedocs.org/projects/pygromacs/badge/?version=latest)](https://readthedocs.org/projects/pygromacs/?badge=latest)
 [![Build Status](https://travis-ci.org/pjohansson/pygromacs.svg?branch=working)](https://travis-ci.org/pjohansson/pygromacs)

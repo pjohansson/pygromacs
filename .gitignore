@@ -48,6 +48,7 @@ img
 include
 
 # Working directory
-working/
+develop/
 build/
 docs/_build
+docs/_themes
