@@ -23,13 +23,15 @@ def verify_path(path, verbose=True):
     i = 1
     backup = path
     while os.path.exists(backup):
-        backup = "#%s.%d#" % (path, i)
+        backup = "%s/#%s.%d#" % (directory, filename, i)
         i += 1
 
     if i > 1:
         os.rename(path, backup)
         if verbose:
             print("Backed up '%s' to '%s'" % (path, backup))
+
+    return backup
 
 
 class Topol(object):
@@ -256,17 +258,20 @@ class MdpFile(object):
 
         :param verbose: Write information.
 
-        :keyword ext: Use this file extension (by default '.mdp').
+        :keyword ext: Use this file extension (by default 'mdp').
 
         """
 
-        # Verify file extension
-        ext = kwargs.pop('ext', '.mdp')
-        if not path.endswith(ext):
-            path += ext
+        if path == None:
+            path = self.path
 
-        # Verify path and back up collision
-        verify_path(path, verbose)
+        # Verify file extension
+        ext = kwargs.pop('ext', 'mdp')
+        if not path.endswith(ext):
+            path += '.' + ext
+
+        # Verify path and backup collision
+        backup = verify_path(path, verbose)
 
         if verbose:
             print("Saving MDP file as '%s' ... " % path, end = "")
@@ -275,6 +280,7 @@ class MdpFile(object):
         with open(path, 'w') as fp:
             with redirect_stdout(fp):
                 self.print()
-
         if verbose:
             print("Done!")
+
+        return backup

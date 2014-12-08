@@ -1,5 +1,8 @@
+import filecmp
+import os
+import random
+
 from pygromacs.gmxfiles import *
-from random import sample
 
 path = 'pygromacs/tests/grompp.mdp'
 
@@ -38,7 +41,7 @@ def test_remove_option():
     length = len(mdp.lines)
 
     num_test = 10
-    keys = sample(mdp.options.keys(), num_test)
+    keys = random.sample(mdp.options.keys(), num_test)
     for parameter in keys:
         index = mdp.options[parameter].index
         copy_lines = mdp.lines.copy()
@@ -80,3 +83,49 @@ def test_print():
     mdp = MdpFile(path)
     mdp.print(True)
     mdp.print(False)
+
+def test_save():
+    mdp = MdpFile(path)
+
+    # Save to same path
+    backup = mdp.save()
+    test_file = MdpFile(path)
+
+    # Control content of copy
+    for test, control in zip(test_file.lines, mdp.lines):
+        assert (test.parameter == control.parameter)
+        assert (test.value == control.value)
+        assert (test.comment == control.comment)
+        assert (test.index == control.index)
+
+    # Return file to original state
+    os.rename(backup, mdp.path)
+
+    # Change options
+    num_test = 10
+    keys_remove = random.sample(mdp.options.keys(), num_test)
+    for parameter in keys_remove:
+        mdp.remove_option(parameter)
+
+    # Set options to random float
+    keys_change = random.sample(mdp.options.keys(), num_test)
+    rand = {}
+    for parameter in keys_change:
+        rand[parameter] = str(random.random())
+        mdp.set_option(parameter, rand[parameter])
+
+    # Save to new path and compare
+    newpath = path.rsplit('.mdp')[0] + '-savetest'
+    backup = mdp.save(newpath, False)
+    control = MdpFile(newpath + '.mdp')
+    for remove, change in zip(keys_remove, keys_change):
+        assert (remove not in control.options.keys())
+        assert (control.get_option(change) == rand[change])
+    os.remove(backup)
+
+    # Control saving to custom extension
+    ext = 'newext'
+    newpathext = newpath + '.' + ext
+    backup = mdp.save(newpath, ext='newext')
+    assert (os.access(newpathext, os.F_OK) == True)
+    os.remove(newpathext)
