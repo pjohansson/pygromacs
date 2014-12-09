@@ -5,14 +5,13 @@ def verify_path(path, verbose=True):
     Verify that a location exists by creating required directories and
     back up any conflicting file.
 
-    :param path: Path to file.
+    Args:
+        path (str): Path to file
+        verbose (bool): Whether or not to print information about
+            a performed backup
 
-    :param verbose: Print information about any backup.
-
-    :return: If a file at ``path`` existed and was backed up, its new path is returned.
-        Otherwise `None`.
-
-    :rtype: str, None
+    Returns:
+        str: The path to a backed up file, empty if no backup was taken
 
     """
 
@@ -25,17 +24,20 @@ def verify_path(path, verbose=True):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    # If a file exists, back it up
+    # Search for first non-existent filename based on path
     i = 1
     backup = path
     while os.path.exists(backup):
-        backup = "%s/#%s.%d#" % (directory, filename, i)
+        new_file = ''.join(['#', filename, '.%d#' % i])
+        backup = os.path.join(directory, new_file)
         i += 1
 
-    if i > 1:
+    # If there was a conflict, move file to backup location
+    if backup != path:
         os.rename(path, backup)
         if verbose:
             print("Backed up '%s' to '%s'" % (path, backup))
-        return backup
     else:
-        return None
+        backup = ""
+
+    return backup
