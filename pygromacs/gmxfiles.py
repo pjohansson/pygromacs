@@ -2,7 +2,7 @@
 
 import os
 from contextlib import redirect_stdout
-from pygromacs.utils import verify_path
+from pygromacs.utils import prepare_path
 
 """Interfaces for reading and modifying Gromacs standard files."""
 
@@ -18,7 +18,7 @@ class MdpFile(object):
     """Container for MDP files.
 
     Args:
-        path (str): Read from file at this path (optional)
+        path (str, optional): Read from file at this path
 
     Attributes:
         path: Path to the last-read file. Used as default by :func:`save`
@@ -95,7 +95,7 @@ class MdpFile(object):
 
         return value
 
-    def set_comment(self, parameter, comment=""):
+    def set_comment(self, parameter, comment):
         """Add a comment to a parameter."""
 
         if parameter not in self.options.keys():
@@ -116,7 +116,7 @@ class MdpFile(object):
         Args:
             parameter (str): A parameter to set,
             value (str): its new value
-            comment (str): and comment (optional)
+            comment (str, optional): and comment
 
         """
 
@@ -173,7 +173,7 @@ class MdpFile(object):
         """Print the current file.
 
         Args:
-            comment (bool): Print or ignore comments
+            comment (bool, optional): Print or ignore comments
 
         """
 
@@ -231,9 +231,9 @@ class MdpFile(object):
         The written content is set in :attr:`lines`.
 
         Args:
-            path (str): Write file to this path (by default to :attr:`path`)
-            verbose (bool): Print information about save
-            ext (str): Use this file extension (by default 'mdp')
+            path (str, optional): Write file to this path (default: :attr:`path`)
+            verbose (bool, optional): Print information about save
+            ext (str, optional): Use this file extension (default: 'mdp')
 
         """
 
@@ -245,7 +245,7 @@ class MdpFile(object):
             path = '.'.join([path, ext])
 
         # Verify path and backup collision
-        verify_path(path, verbose)
+        prepare_path(path, verbose)
 
         # Actually save the file
         with open(path, 'w') as fp:
