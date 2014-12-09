@@ -64,7 +64,7 @@ class MdpFile(object):
             """Print option as a line.
 
             Uses a standard MDP format. Use ``comment`` to print or ignore
-            a comment. Returns printed string.
+            a comment.
 
             """
 
@@ -75,7 +75,6 @@ class MdpFile(object):
                 string += "; %s" % self.comment
             if self.parameter or comment:
                 print(string)
-            return string
 
     def get_option(self, parameter):
         """Return the value of a parameter.
@@ -104,7 +103,7 @@ class MdpFile(object):
             return None
 
         # Verify that comment is of good form
-        self.options[parameter].comment = comment.lstrip('; ')
+        self.options[parameter].comment = comment.lstrip(';').strip()
 
         return None
 
@@ -144,24 +143,31 @@ class MdpFile(object):
             for option in self.lines[index:]:
                 option.index -= 1
 
-    def search(self, string):
+    def search(self, parameter):
         """Search for a parameter in the file.
 
         Prints any matching option and its value.
 
+        Returns:
+            int: Number of options found
+
         """
 
-        string = str(string).strip()
-        test = [self.print_option(option) for option in self.options.keys()
-                if option.find(string) != -1]
-        return test
+        query = str(parameter).strip().lower()
+
+        i = 0
+        for option in self.options.keys():
+            if option.lower().find(query) != -1:
+                self.print_option(option)
+                i += 1
+
+        return i
 
     def print_option(self, parameter):
         """Print a parameter, its value and comment."""
 
         if parameter in self.options.keys():
-            string = self.options[parameter].print()
-        return string
+            self.options[parameter].print()
 
     def print(self, comment=True):
         """Print the current file.
@@ -171,7 +177,8 @@ class MdpFile(object):
 
         """
 
-        [option.print(comment) for option in self.lines]
+        for option in self.lines:
+            option.print(comment)
 
     def read(self, path):
         """Read an MDP file at ``path``.
@@ -203,7 +210,7 @@ class MdpFile(object):
             return option
 
         # Verify file extension
-        if not os.access(path, os.R_OK) and not path.endswith('.mdp'):
+        if (not os.access(path, os.F_OK)) and (not path.endswith('.mdp')):
             path += '.mdp'
 
         self.path = path
@@ -215,8 +222,8 @@ class MdpFile(object):
                         for index, line in enumerate(fp.readlines())]
 
         except FileNotFoundError:
+            self.path = ""
             print("could not open '%s' for reading" % self.path)
-            self.path = None
 
     def save(self, path="", verbose=True, ext='mdp'):
         """Save current MDP file.
@@ -228,9 +235,6 @@ class MdpFile(object):
             verbose (bool): Print information about save
             ext (str): Use this file extension (by default 'mdp')
 
-        Returns:
-            str: The path to a file if one was backed up
-
         """
 
         if path == "":
@@ -238,19 +242,16 @@ class MdpFile(object):
 
         # Verify file extension
         if not path.endswith(ext):
-            path = ''.join([path, '.', ext])
+            path = '.'.join([path, ext])
 
         # Verify path and backup collision
-        backup = verify_path(path, verbose)
-
-        if verbose:
-            print("Saving MDP file as '%s' ... " % path, end = "")
+        verify_path(path, verbose)
 
         # Actually save the file
         with open(path, 'w') as fp:
             with redirect_stdout(fp):
                 self.print()
-        if verbose:
-            print("Done!")
 
-        return backup
+        if verbose:
+            print("Saved MDP file to '%s'." % path, end = "")
+

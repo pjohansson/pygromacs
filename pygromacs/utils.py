@@ -36,7 +36,7 @@ def verify_path(path, verbose=True):
     if backup != path:
         os.rename(path, backup)
         if verbose:
-            print("Backed up '%s' to '%s'" % (path, backup))
+            print("Backed up '%s' to '%s'." % (path, backup))
     else:
         backup = ""
 

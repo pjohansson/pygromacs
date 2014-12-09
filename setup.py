@@ -24,6 +24,7 @@ setup(
         license='None',
         packages=find_packages(),
         cmdclass = {'test': PyTest},
+        install_requires = ['setuptools'],
         zip_safe=False
         )
 
