@@ -1,14 +1,14 @@
 import os
 
-def verify_path(path, verbose=True):
-    """
-    Verify that a location exists by creating required directories and
-    back up any conflicting file.
+def prepare_path(path, verbose=True):
+    """Prepare a path for writing.
+
+    Creates required directories and backs up any conflicting file.
 
     Args:
         path (str): Path to file
-        verbose (bool): Whether or not to print information about
-            a performed backup
+        verbose (bool, optional): Whether or not to print information
+            about a performed backup
 
     Returns:
         str: The path to a backed up file, empty if no backup was taken
