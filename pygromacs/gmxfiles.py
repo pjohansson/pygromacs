@@ -2,8 +2,9 @@
 
 import os
 from contextlib import redirect_stdout
-
 from pygromacs.utils import verify_path
+
+"""Interfaces for reading and modifying Gromacs standard files."""
 
 class Topol(object):
 
