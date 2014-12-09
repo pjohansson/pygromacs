@@ -16,29 +16,25 @@ class Topol(object):
 class MdpFile(object):
     """Container for MDP files.
 
-    :param path: Read from file at ``path`` (optional).
+    Args:
+        path (str): Read from file at this path (optional)
 
-    .. attribute:: MdpFile.path
+    Attributes:
+        path: Path to the last-read file. Used as default by :func:`save`
+            when writing changes to disk.
 
-        Path to the last-read file. Used as default by :func:`save` when
-        writing changes to disk.
+        lines: This is an ordered list of :class:`MdpOption` objects, containing
+            the parameters, values, and comments which together make up a file.
+            It is a list to keep a read file as close to the original as possible
+            when modifying it.
 
-    .. attribute:: MdpFile.lines
-
-        This is an ordered list of :class:`MdpOption` objects, containing
-        parameters, values, and comments which make up a file. It is a list
-        to keep a read file as close to the original as possible when
-        modifying it.
-
-    .. attribute:: MdpFile.options
-
-        This is a dictionary of parameters, linking to objects in :attr:`lines`.
-        Used internally to quickly access any parameter value or comment of
-        that list.
+        options: This is a dictionary of parameters, linking to objects in
+            :attr:`lines`. Used internally to quickly access any parameter
+            of that list and thus file.
 
     """
 
-    def __init__(self, path=None):
+    def __init__(self, path=""):
         self.path = path
         self.lines = []
         self.options = {}
@@ -49,13 +45,11 @@ class MdpFile(object):
     class MdpOption(object):
         """Container for an MDP option.
 
-        :param parameter: Option
-
-        :param value: Value
-
-        :param comment: Comment
-
-        :param index: Index of option in :attr:`MdpFile.lines`.
+        Args:
+            parameter (str): A parameter,
+            value (str): its value
+            comment (str): and comment
+            index (int): Index of option in :attr:`MdpFile.lines`
 
         """
 
@@ -66,9 +60,10 @@ class MdpFile(object):
             self.index = index
 
         def print(self, comment=True):
-            """
-            Print the option line in a standard format. Use ``comment``
-            to print or ignore a comment. Returns printed string.
+            """Print option as a line.
+
+            Uses a standard MDP format. Use ``comment`` to print or ignore
+            a comment. Returns printed string.
 
             """
 
@@ -82,25 +77,26 @@ class MdpFile(object):
             return string
 
     def get_option(self, parameter):
-        """
-        Return the value of a parameter, or an empty string if
-        it is not found.
+        """Return the value of a parameter.
+
+        Args:
+            parameter(str): A parameter
+
+        Returns:
+            str: The parameter value, empty if not found
 
         """
 
         try:
             value = self.options[parameter].value
         except KeyError:
-            value = None
+            value = ""
             print("option '%s' not in list" % parameter)
 
         return value
 
     def set_comment(self, parameter, comment=""):
-        """
-        Set a comment to a parameter.
-
-        """
+        """Add a comment to a parameter."""
 
         if parameter not in self.options.keys():
             print("option '%s' not in list" % parameter)
@@ -112,9 +108,15 @@ class MdpFile(object):
         return None
 
     def set_option(self, parameter, value, comment=""):
-        """
-        Set a value and (optionally) a comment for a parameter in :attr:`options`.
-        If the parameter is not set the option is appended to :attr:`lines`.
+        """Set a parameter value.
+
+        If the parameter is not set the option is appended to
+        end of :attr:`lines`.
+
+        Args:
+            parameter (str): A parameter to set,
+            value (str): its new value
+            comment (str): and comment (optional)
 
         """
 
@@ -129,10 +131,7 @@ class MdpFile(object):
             self.set_comment(parameter, comment)
 
     def remove_option(self, parameter):
-        """
-        Find an option and remove it from :attr:`lines` and :attr:`options`.
-
-        """
+        """Remove a parameter from the file."""
 
         if parameter in self.options.keys():
             # Find index of parameter and remove
@@ -144,42 +143,40 @@ class MdpFile(object):
             for option in self.lines[index:]:
                 option.index -= 1
 
-    def search(self, string, comment=True):
-        """
-        Search for a parameter in :attr:`options`. Prints matching options.
-        Use ``comment`` to include or ignore comments.
+    def search(self, string):
+        """Search for a parameter in the file.
+
+        Prints any matching option and its value.
 
         """
 
         string = str(string).strip()
-        test = [self.print_option(option, comment) for option in self.options.keys()
+        test = [self.print_option(option) for option in self.options.keys()
                 if option.find(string) != -1]
         return test
 
-    def print_option(self, parameter, comment=False):
-        """
-        Print the specified option if found in :attr:`options`.
-        Use ``comment`` to print or ignore comment.
-
-        """
+    def print_option(self, parameter):
+        """Print a parameter, its value and comment."""
 
         if parameter in self.options.keys():
-            string = self.options[parameter].print(comment)
+            string = self.options[parameter].print()
         return string
 
     def print(self, comment=True):
-        """
-        Print the file in current order of :attr:`lines`. Use ``comment``
-        to print or ignore comments.
+        """Print the current file.
+
+        Args:
+            comment (bool): Print or ignore comments
 
         """
 
         [option.print(comment) for option in self.lines]
 
     def read(self, path):
-        """
-        Read an MDP file at ``path``. See :attr:`lines` and :attr:`options`
-        for information on how the data is stored. Updates :attr:`path`.
+        """Read an MDP file at ``path``.
+
+        Updates :attr:`path` to given value. Parameters and lines
+        are stored in :attr:`lines` and :attr:`options`.
 
         """
 
@@ -188,16 +185,13 @@ class MdpFile(object):
                 option, comment = line.split(';', 1)
             except ValueError:
                 option, comment = line, ""
-
             try:
                 parameter, value = option.split('=')
             except ValueError:
                 parameter, value = "", ""
-
             return [var.strip() for var in (parameter, value, comment)]
 
         def add_line(line, index):
-            # Parse line for variables
             parameter, value, comment = parse_line(line)
 
             # Link option keyword to place in ordered list
@@ -218,34 +212,32 @@ class MdpFile(object):
             with open(self.path, 'r') as fp:
                 self.lines = [add_line(line, index)
                         for index, line in enumerate(fp.readlines())]
+
         except FileNotFoundError:
             print("could not open '%s' for reading" % self.path)
             self.path = None
 
-    def save(self, path=None, verbose=True, **kwargs):
-        """
-        Save current MDP file, which is given by :attr:`lines`.
+    def save(self, path="", verbose=True, ext='mdp'):
+        """Save current MDP file.
 
-        :param path: Write file to this path (by default to :attr:`path`).
-            Any file at this location is backed up before writing.
+        The written content is set in :attr:`lines`.
 
-        :param verbose: Write information.
+        Args:
+            path (str): Write file to this path (by default to :attr:`path`)
+            verbose (bool): Print information about save
+            ext (str): Use this file extension (by default 'mdp')
 
-        :keyword ext: Use this file extension (by default 'mdp').
-
-        :return: If a file was backed up its new path is returned, otherwise `None`.
-
-        :rtype: str, None
+        Returns:
+            str: The path to a file if one was backed up
 
         """
 
-        if path == None:
+        if path == "":
             path = self.path
 
         # Verify file extension
-        ext = kwargs.pop('ext', 'mdp')
         if not path.endswith(ext):
-            path += '.' + ext
+            path = ''.join([path, '.', ext])
 
         # Verify path and backup collision
         backup = verify_path(path, verbose)
