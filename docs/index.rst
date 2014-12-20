@@ -10,7 +10,9 @@ Welcome to pygromacs's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+
+   toolbox-project
 
    modules/pygromacs
 
