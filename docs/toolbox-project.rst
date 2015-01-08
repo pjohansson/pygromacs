@@ -29,6 +29,19 @@ Later on, coverage reporting was added using a PyTest plugin. Finally,
 `Travis CI` [#]_ and `Coveralls` [#]_ integration was added, mostly to try
 the services out.
 
+Using test driven development, the existing class ``MdpFile`` in
+``pygromacs/gmxfiles.py`` for handling a Gromacs MDP input file with
+the following functionality was modified:
+
+ - Reading input file parameters, values, and optional comments
+ - Adding, removing and modifying values
+ - Inspecting the read parameters through searching
+ - Saving the file to a new path, backing up any existing file at path
+
+Tests were implemented for all present functionality, and changes made
+to existing functionality were made in a write-tests-first workflow.
+
+
 Reflections on the switch
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Prior to the project the test suite PyUnit had been used to create a
@@ -129,6 +142,12 @@ suggested tools of the course. While taking some time to set up it
 has shown me not only how simple it is to create fully covered project
 web sites, but as with tests it has helped me to think my functions
 through before writing them.
+
+For the project, documentation was added to all functions and classes
+in ``pygromacs/gmxfiles.py`` and generated using Sphinx. The module
+documentation is available at the `Read the Docs web page`_.
+
+.. _`Read the Docs web page`: http://pygromacs.readthedocs.org/en/working/modules/pygromacs.html
 
 Module documentation
 ~~~~~~~~~~~~~~~~~~~~
