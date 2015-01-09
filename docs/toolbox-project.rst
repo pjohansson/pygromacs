@@ -7,7 +7,7 @@ course given by PDC at KTH, Fall of 2014.
     Petter Johansson
 :Email:
     petter.johansson@scilifelab.se
-:Github:
+:Source:
     https://github.com/pjohansson/pygromacs
 
 
@@ -25,7 +25,7 @@ to setup.py to make it easy to run a local test:
 
     ``python setup.py test``
 
-Later on, coverage reporting was added using a PyTest plugin. Finally,
+Later on, coverage reporting was added using a PyTest plug-in. Finally,
 `Travis CI` [#]_ and `Coveralls` [#]_ integration was added, mostly to try
 the services out.
 
@@ -39,8 +39,7 @@ the following functionality was modified:
  - Saving the file to a new path, backing up any existing file at path
 
 Tests were implemented for all present functionality, and changes made
-to existing functionality were made in a write-tests-first workflow.
-
+to existing functionality were made in a write-tests-first work flow.
 
 Reflections on the switch
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,7 +104,7 @@ Making a change to some functionality, then, is more or less as simple
 as changing the test specification, either modifying the expected controls
 or adding new ones as required, then changing the function to the new
 spec. If this breaks another test, either make sure that the spec is not
-contradicting itself, or return to the function to fix it. This workflow
+contradicting itself, or return to the function to fix it. This work flow
 is very comfortable to me.
 
 .. _2078e30: https://github.com/pjohansson/pygromacs/commit/2078e30889f748ba7ab47c7a860ece0fe28e89f4
@@ -155,7 +154,7 @@ Grasping the syntax of .rst files was simple enough for the most part,
 and a pleasant surprise in how easy it is to use. It took some time to
 figure out how to link module functions and attributes when writing
 function documentation, but once the syntax was down it was a breeze
-to use the autodoc tools to parse docstrings. Moving on I plan to
+to use the `autodoc` tools to parse docstrings. Moving on I plan to
 create separate pages with usage documentation that is not generated
 from docstrings, but written in an easy-to-read-manner, but it's
 comforting to know that it's easy to get both without a lot of extra
@@ -167,7 +166,7 @@ As with trying out test driven development, properly documenting my
 functions actually helped me improve the code quality of the project.
 I noticed that trying to explain the function in a way that's easy to
 read means that the function itself should be reasonably simple, and
-not throw unexcepted returns or behaviour.
+not throw unexpected returns or behaviour.
 
 I set out to make sure that every function has a well documented input
 and output, which means that both have to be on well defined forms.
@@ -194,7 +193,7 @@ clearly labelled and that their Types are encouraged to be a part of any
 argument. As with the return values as described above this makes me think
 of how to parse input data when designing the function documentation, which
 helps me avoid duck typing and encourage that different types of data are
-used to warp functions in strange ways. Which I have a tendence to do when
+used to warp functions in strange ways. Which I have a tendency to do when
 not keeping myself on a tight leash.
 
 .. _b221fb9: https://github.com/pjohansson/pygromacs/commit/b221fb90f494f79317aecab9a58b7ec0adcc41a2
@@ -203,7 +202,8 @@ not keeping myself on a tight leash.
 Final reflections
 -----------------
 For me this project has been very useful. My program suite can now
-easily read and modify .mdp files for Gromacs. Getting familiar with tests
+easily read and modify .mdp files for Gromacs and further modifications
+will be well documented. Getting familiar with tests
 is making me more confident when coding, since I know that I should not
 be able to break things without noticing. And seeing hands-on that it's easy
 to write legible documentation and setting up a web page for it was also
